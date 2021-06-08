@@ -32,7 +32,7 @@ class Graph:
             print(f'{node.name} links to {[child.name for child in node.children]}')
 
     def sort_nodes(self):
-        self.nodes.sort(key=lambda node: int(node.name))
+        self.nodes.sort(key=lambda node: (node.name))
 
     def normalize_pagerank(self):
         pagerank_sum = sum(node.pagerank for node in self.nodes)
@@ -42,7 +42,7 @@ class Graph:
 
     def get_pagerank_list(self):
         pagerank_list = np.asarray([node.pagerank for node in self.nodes], dtype='float32')
-        return np.round(pagerank_list, 3)
+        return pagerank_list
 
 
 class Node:
@@ -63,3 +63,9 @@ class Node:
             if(parent.name == new_parent.name):
                 return None
         self.parents.append(new_parent)
+
+    def update_pagerank(self, d, n):
+        p = self.parents
+        ps = sum((node.pagerank / len(node.children)) for node in p)
+        rj = d / n
+        self.pagerank = rj + (1-d) * ps
